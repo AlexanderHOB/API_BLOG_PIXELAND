@@ -75,5 +75,7 @@ trait ApiResponser {
         $paginated->appends(request()->all);
         return $paginated;
     }
-
+    protected function showMessage($message,$code = 200){
+        return $this->successResponse($message,$code);
+    }
 }

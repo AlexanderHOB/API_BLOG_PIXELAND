@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\User;
 
 use App\User;
+use App\Mail\UserCreated;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use App\Transformers\UserTransformer;
 use App\Http\Controllers\ApiController;
@@ -27,7 +29,6 @@ class UserController extends ApiController
         return $this->showAll($users);
     }
 
-   
     public function store(Request $request)
     {
         $rules=[
@@ -53,12 +54,6 @@ class UserController extends ApiController
         return $this->showOne($user);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\user  $user
-     * @return \Illuminate\Http\Response
-     */
     public function show(User $user)
     {
         return $this->showOne($user);
@@ -99,13 +94,13 @@ class UserController extends ApiController
             $user->password = bcrypt($request->password);
         }
         if($request->has('admin')){
-            if(!$user->isVerified()){
-                return $this->errorResponse('Unicamente los usuarios verificados cambiar su valor de administrador',409);
+            if(!$user->isVerified() || Gate::denies('update-admin',$user)){
+                return $this->errorResponse('Unicamente los usuarios verificados pueden cambiar su valor de administrador',409);
             }
             $user->admin = $request->admin;
         }
         if($request->has('writter')){
-            if(!$user->isVerified()){
+            if(!$user->isVerified() || Gate::denies('update-admin',$user)){
                 return $this->errorResponse('Unicamente los usuarios verificados cambiar su rol a escritor',409);
             }
             $user->writter = $request->writter;
@@ -117,12 +112,6 @@ class UserController extends ApiController
         return $this->showOne($user);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\user  $user
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(User $user)
     {
         Storage::disk('profile')->delete($user->image);

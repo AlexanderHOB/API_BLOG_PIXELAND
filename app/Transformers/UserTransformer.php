@@ -72,8 +72,8 @@ class UserTransformer extends TransformerAbstract
             'fechaCreacion'         =>  'created_at',
             'fechaActualizacion'    =>  'updated_at',
             'fechaEliminacion'      =>  'delete_at',
-            'contrasena'            =>    'password',
-            'contrasena_confirmada' =>      'password_confirmation',
+            'contrasena'            =>  'password',
+            'contrasena_confirmada' =>  'password_confirmation',
 
         ];
 

@@ -38,7 +38,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('action-writter',function($user,$writter){
             return $user->id === $writter->id;
         });
-
+        Gate::define('update-admin',function($user,$authenticateUser){
+            return $user->isAdmin();
+        });
         Gate::define('create-action', function ($user, $reader) {
             return $user->id === $reader->id;
           });
